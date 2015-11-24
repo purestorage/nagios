@@ -1,0 +1,73 @@
+=head1 Nagios check for Pure Storage arrays
+
+Nagios (https://www.nagios.com/) is free monitoring package. This document covers a 
+method of using Nagios to monitor Pure arrays.
+
+=head2 SNMP
+
+SNMP is a common method for monitoring systems in a datacenter.
+
+Currently, Pure Storage offers a static (non-trap) SNMP implementation that lists 
+6 array-wide metrics as part of their MIB:
+
+  Viewing: (1.3.6.1.4.1.40482)
+  
+  PURESTORAGE-MIB::pureArrayReadBandwidth.0 = INTEGER: 0 B/s
+  PURESTORAGE-MIB::pureArrayWriteBandwidth.0 = INTEGER: 0 B/s
+  PURESTORAGE-MIB::pureArrayReadIOPS.0 = INTEGER: 0 op/s
+  PURESTORAGE-MIB::pureArrayWriteIOPS.0 = INTEGER: 0 op/s
+  PURESTORAGE-MIB::pureArrayReadLatency.0 = INTEGER: 0 us/op
+  PURESTORAGE-MIB::pureArrayWriteLatency.0 = INTEGER: 0 us/op
+
+This is insufficient for most common monitoring concerns.
+
+=head2 REST
+
+A full REST API is available for automation and monitoring Pure Storage arrays.
+
+Consequently, the preferred method for implementing monitoring is via this API.
+
+=head3 Configuring the Pure Array
+
+The assumption below is you have already followed instructions for generating an API 
+token. Generating a token is the only array-side configuration required.
+
+=head3 Configuring Nagios
+
+This method has nagios execute a local "check" script on the server that queries the 
+Array over the REST API. This is a common design for checks in nagios.
+
+Here is the example Nagios command definition:
+
+  # Check PureArray - custom script to check volumes on Pure Arrays
+  define command {
+  	command_name check_purearray
+  	command_line /usr/local/bin/check_purearray.pl $HOSTADDRESS$
+  }
+
+Here is an example of a service definition applying this check to "my-pure-array1":
+
+  define service {
+      use                     generic-hourly-service
+      host_name               my-pure-array1.company.com
+      service_description     Pure Array Usage
+      notification_interval   480
+      check_command           check_purearray
+  }
+
+The Perl script used for the check is attached. 
+
+To use it, will need to edit it and put the API tokens for each array in the hash, keyed 
+by hostname, at the top as they are in the script. (lines 15-24)
+
+Also of interest: Lines 27 through 31 set the alert thresholds. They are as follows:
+
+=over 4
+
+=item 27) If "System" on the array is above 1%, critical alert
+
+=item 28 & 29) If the array is above 85% full, warning. If above 90% full, critical.
+
+=item 30 & 31) If a volume is above 85% full, warning. If above 90% full, critical.
+
+=back
