@@ -107,8 +107,10 @@ for my $param (qw/system capacity total/) {
   exit $UNKNOWN
 }
 
-if ( ($array_info->{system}/$array_info->{capacity}) >= $max_system_percent ) {
-   push @critical, "System space is in use: [$ret->{system}]";
+if ( (100 * $array_info->{system} / $array_info->{capacity}) >= $max_system_percent ) {
+   my $percent = sprintf('%0.2f%%', (100 * $array_info->{system} / $array_info->{capacity}));
+   my $usage = human_readable_bytes($array_info->{system});
+   push @critical, "System space in use: $usage / $percent";
 }
 
 my $array_percent_used = sprintf('%0.2f', (100 * $array_info->{total} / $array_info->{capacity}));
@@ -199,4 +201,15 @@ sub api_post {
   }
   print 'DEBUG: POST ', $url, ' -> ', $num, ":\n", Dumper(from_json($con)), "\n" if $debug;
   return from_json($con);
+}
+
+sub human_readable_bytes {
+  my $raw = shift @_;
+  if ( $raw > 500_000_000_000 ) {
+    return sprintf('%.2f TB', ($raw/1_000_000_000_000));
+  } elsif ( $raw > 500_000_000 ) {
+    return sprintf('%.2f GB', ($raw/1_000_000_000));
+  } else {
+    return sprintf('%.2f MB', ($raw/1_000_000));
+  }
 }
