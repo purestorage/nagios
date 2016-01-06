@@ -16,7 +16,7 @@ my %api_tokens = (
   'my-pure-array2.company.com' => 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX',
 );
 
-my $max_system_percent = 1;
+my $max_system_percent = 4;
 my $array_warn_percent = 85;
 my $array_crit_percent = 90;
 my $vol_warn_percent = 85;
