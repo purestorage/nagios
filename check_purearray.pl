@@ -16,7 +16,7 @@ my %api_tokens = (
   'my-pure-array2.company.com' => 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX',
 );
 
-my $max_system_percent = 4;
+my $max_system_percent = 10;
 my $array_warn_percent = 85;
 my $array_crit_percent = 90;
 my $vol_warn_percent = 85;
@@ -110,7 +110,7 @@ for my $param (qw/system capacity total/) {
 if ( (100 * $array_info->{system} / $array_info->{capacity}) >= $max_system_percent ) {
    my $percent = sprintf('%0.2f%%', (100 * $array_info->{system} / $array_info->{capacity}));
    my $usage = human_readable_bytes($array_info->{system});
-   push @critical, "System space in use: $usage / $percent";
+   push @warning, "System space in use: $usage / $percent";
 }
 
 my $array_percent_used = sprintf('%0.2f', (100 * $array_info->{total} / $array_info->{capacity}));

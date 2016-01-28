@@ -64,7 +64,7 @@ Also of interest: Lines 27 through 31 set the alert thresholds. They are as foll
 
 =over 4
 
-=item 27) If "System" on the array is above 4%, critical alert
+=item 27) If "System" on the array is above 10%, critical alert
 
 =item 28 & 29) If the array is above 85% full, warning. If above 90% full, critical.
 
