@@ -183,8 +183,7 @@ for my $vol ( sort { ($b->{total}/$b->{size}) <=> ($a->{total}/$a->{size}) } @$v
   } else {
     push @info, $message;
   }
-    push @perfdata, $perfmessage if ($perf);
-  }
+  push @perfdata, $perfmessage if ($perf);
 }
 
 # Kill the session
