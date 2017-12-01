@@ -148,7 +148,7 @@ my $array_percent_used = sprintf('%0.2f', (100 * $array_info->{total} / $array_i
 my $array_data_reduction = sprintf('%0.2f', $array_info->{data_reduction});
 my $array_total_reduction = sprintf('%0.2f', $array_info->{total_reduction});
 my $message = "Array @ $array_percent_used\% (Data reduction is $array_data_reduction, Total reduction is $array_total_reduction)";
-my $perfmessage = 'Array=' . $array_info->{total} . 'B;' . $array_info->{size}*$array_warn_percent/100 . ';' . $array_info->{size}*$array_crit_percent/100 . ';0;' . $array_info->{size} if ($perf);
+my $perfmessage = 'Array=' . $array_info->{total} . 'B;' . $array_info->{capacity}*$array_warn_percent/100 . ';' . $array_info->{capacity}*$array_crit_percent/100 . ';0;' . $array_info->{capacity} . ' Array_total_reduction=' . $array_total_reduction . ';;;0; Array_data_reduction=' . $array_data_reduction . ';;;0;' if ($perf);
 
 if ( $array_percent_used > $array_crit_percent ) {
   push @critical, $message;
